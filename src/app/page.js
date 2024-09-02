@@ -1,4 +1,5 @@
 import LoginForm from "../components/LoginForm";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -7,6 +8,12 @@ export default function Home() {
         Log in to your account
       </p>
       <LoginForm />
+      <p className="text-2xl font-semibold text-gray-800 mb-6">
+        register???
+      <Link href="register" className="mx-2 underline">
+        Register 
+      </Link>
+      </p>
     </div>
   );
 }

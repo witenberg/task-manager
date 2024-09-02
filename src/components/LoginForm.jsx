@@ -30,11 +30,6 @@ const LoginForm = () => {
 
   return (
     <>
-      {error && (
-        <div className="text-red-500 text-center mb-4">
-          {error}
-        </div>
-      )}
       <form
         className="w-full max-w-md bg-white shadow-md rounded-lg p-6"
         onSubmit={onSubmit}
@@ -72,6 +67,9 @@ const LoginForm = () => {
           Log in
         </button>
       </form>
+      <p className="text-2xl font-semibold text-gray-800 mb-6">
+        or
+      </p>
       <div className="mt-6">
         <SocialLogin />
       </div>
