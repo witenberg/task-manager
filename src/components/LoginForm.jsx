@@ -2,34 +2,56 @@
 
 import SocialLogin from "./SocialLogin";
 import { doCredentialLogin } from "../app/actions/index";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const LoginForm = () => {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const searchParams = useSearchParams(); // Hook do pobierania parametrów URL
+  const error = searchParams.get("error"); // Pobranie parametru 'error' z URL
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (error) {
+      switch (error) {
+        case 'Incorrect password':
+          setErrorMessage('Invalid password. Please try again.');
+          break;
+        case 'User not found':
+          setErrorMessage('Email not found. Please check your email.');
+          break;
+        case 'CredentialsSignin':
+          setErrorMessage('Invalid email or password.');
+          break;
+        default:
+          setErrorMessage('An error occurred. Please try again.');
+      }
+    }
+  }, [error]);
 
   async function onSubmit(event) {
     event.preventDefault();
     try {
       const formData = new FormData(event.currentTarget);
-
       const response = await doCredentialLogin(formData);
 
-      if (!!response.error) {
-        console.error(response.error);
-        setError(response.error.message);
-      } else {
+      if (!response.error) {
         router.push("/home");
+      } else {
+        // Ustawiamy komunikat z odpowiedzi, tylko jeśli odpowiedź zawiera błąd
+        setErrorMessage(response.error.message || "Invalid credentials. Please try again.");
       }
     } catch (e) {
-      console.error(e);
-      setError("Check your Credentials");
+      // Jeśli błąd nie został ustawiony wcześniej, wyświetlamy ten ogólny błąd
+      if (!errorMessage) {
+        setErrorMessage("An error occurred during login. Please try again.");
+      }
     }
   }
 
   return (
     <>
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <form
         className="w-full max-w-md bg-white shadow-md rounded-lg p-6"
         onSubmit={onSubmit}
