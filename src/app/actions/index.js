@@ -3,32 +3,32 @@
 import { signIn, signOut } from "../../auth"
 
 export async function doSocialLogin(formData) {
-    const action = formData.get('action');
-    await signIn(action, { redirectTo: "/home"});
+  const action = formData.get('action');
+  await signIn(action, { redirectTo: "/home" });
 
-    console.log(action);
+  console.log(action);
 }
 
 export async function doLogout() {
-    await signOut({ redirectTo: "/"});
+  await signOut({ redirectTo: "/" });
 }
 
 export async function doCredentialLogin(formData) {
-    try {
-      const response = await signIn("credentials", {
-        email: formData.get('email'),
-        password: formData.get('password'),
-        redirect: false,
-      });
-  
-      if (response?.error) {
-        return { error: response.error };
-      }
+  try {
+    const response = await signIn("credentials", {
+      email: formData.get('email'),
+      password: formData.get('password'),
+      redirect: false,
+    });
 
-      return response;
-
-    } catch (err) {
-        return { error: err.message };
+    if (response?.error) {
+      return { error: response.error };
     }
+
+    return response;
+
+  } catch (err) {
+    return { error: err.message };
+  }
 }
-  
+

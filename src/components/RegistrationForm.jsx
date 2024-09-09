@@ -10,7 +10,7 @@ const RegistrationForm = () => {
 
     async function onSubmit(event) {
         event.preventDefault();
-        setErrorMessage(""); // Resetuj komunikat o błędzie
+        setErrorMessage("");
 
         try {
             const formData = new FormData(event.currentTarget);

@@ -11,13 +11,12 @@ const LoginForm = () => {
 
   async function onSubmit(event) {
     event.preventDefault();
-    setErrorMessage(''); // Resetujemy komunikat o błędzie przed próbą logowania
+    setErrorMessage(''); // reset komunikatu o bledzie
 
     const formData = new FormData(event.currentTarget);
     const response = await doCredentialLogin(formData);
 
     if (response?.error) {
-      // Obsługa błędów na podstawie zwróconego obiektu błędu
       switch (response.error) {
         case 'Error: Incorrect password':
           setErrorMessage('Invalid password. Please try again.');
@@ -26,10 +25,9 @@ const LoginForm = () => {
           setErrorMessage('Email not found. Please check your email.');
           break;
         default:
-          setErrorMessage('An unexpected error occurred. Please try again.');
+          setErrorMessage('Invalid credentials.');
       }
     } else {
-      // Przekierowanie do strony głównej, gdy logowanie jest poprawne
       router.push("/home");
     }
   }
@@ -74,9 +72,6 @@ const LoginForm = () => {
           Log in
         </button>
       </form>
-      <p className="text-2xl font-semibold text-gray-800 mb-6">
-        or
-      </p>
       <div className="mt-6">
         <SocialLogin />
       </div>

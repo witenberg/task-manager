@@ -8,11 +8,11 @@ export default function Home() {
         Log in to your account
       </p>
       <LoginForm />
-      <p className="text-2xl font-semibold text-gray-800 mb-6">
-        register???
-      <Link href="register" className="mx-2 underline">
-        Register 
-      </Link>
+      <p className="text-sm text-gray-600 mt-4">
+        Don't have an account?{" "}
+        <Link href="/register" className="text-orange-500 hover:text-orange-600 underline">
+          Register here
+        </Link>
       </p>
     </div>
   );
