@@ -1,24 +1,26 @@
-"use client"
+"use client";
 
 import SocialLogin from "./SocialLogin";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const RegistrationForm = () => {
-
     const router = useRouter();
+    const [errorMessage, setErrorMessage] = useState("");
 
-    async function onSubmit(event){
+    async function onSubmit(event) {
         event.preventDefault();
+        setErrorMessage(""); // Resetuj komunikat o błędzie
 
         try {
             const formData = new FormData(event.currentTarget);
 
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const password = formData.get('password');
+            const name = formData.get("name");
+            const email = formData.get("email");
+            const password = formData.get("password");
 
-            const response = await fetch('/api/register', {
-                method: 'POST',
+            const response = await fetch("/api/register", {
+                method: "POST",
                 headers: {
                     "content-type": "application/json",
                 },
@@ -26,13 +28,19 @@ const RegistrationForm = () => {
                     name,
                     email,
                     password,
-                })
+                }),
             });
 
-            response.status === 201 && router.push('/');
-
-        }catch (e) {
+            if (response.status === 201) {
+                router.push("/");
+            } else if (response.status === 409) {
+                setErrorMessage("User with this email already exists.");
+            } else {
+                setErrorMessage("An unexpected error occurred.");
+            }
+        } catch (e) {
             console.error(e.message);
+            setErrorMessage("An error occurred during registration.");
         }
     }
 
@@ -42,9 +50,16 @@ const RegistrationForm = () => {
                 className="w-full max-w-md bg-white shadow-md rounded-lg p-6"
                 onSubmit={onSubmit}
             >
-
+                {errorMessage && (
+                    <div className="mb-4 text-red-500 text-sm">
+                        {errorMessage}
+                    </div>
+                )}
                 <div className="mb-4">
-                    <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
+                    <label
+                        htmlFor="name"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                    >
                         Name
                     </label>
                     <input
@@ -57,7 +72,10 @@ const RegistrationForm = () => {
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+                    <label
+                        htmlFor="email"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                    >
                         Email Address
                     </label>
                     <input
@@ -70,7 +88,10 @@ const RegistrationForm = () => {
                 </div>
 
                 <div className="mb-6">
-                    <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+                    <label
+                        htmlFor="password"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                    >
                         Password
                     </label>
                     <input
@@ -93,7 +114,7 @@ const RegistrationForm = () => {
                 <SocialLogin />
             </div>
         </>
-    )
-}
+    );
+};
 
 export default RegistrationForm;

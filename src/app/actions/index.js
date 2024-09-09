@@ -13,16 +13,22 @@ export async function doLogout() {
     await signOut({ redirectTo: "/"});
 }
 
-export async function doCredentialLogin(formData){
-    console.log("formData", formData);
+export async function doCredentialLogin(formData) {
     try {
-        const response = await signIn("credentials", {
-            email: formData.get('email'),
-            password: formData.get('password'),
-            redirect: false,
-        });
-        return response;
+      const response = await signIn("credentials", {
+        email: formData.get('email'),
+        password: formData.get('password'),
+        redirect: false,
+      });
+  
+      if (response?.error) {
+        return { error: response.error };
+      }
+
+      return response;
+
     } catch (err) {
-        throw err;
+        return { error: err.message };
     }
 }
+  

@@ -2,50 +2,35 @@
 
 import SocialLogin from "./SocialLogin";
 import { doCredentialLogin } from "../app/actions/index";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const LoginForm = () => {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Hook do pobierania parametrów URL
-  const error = searchParams.get("error"); // Pobranie parametru 'error' z URL
   const [errorMessage, setErrorMessage] = useState('');
-
-  useEffect(() => {
-    if (error) {
-      switch (error) {
-        case 'Incorrect password':
-          setErrorMessage('Invalid password. Please try again.');
-          break;
-        case 'User not found':
-          setErrorMessage('Email not found. Please check your email.');
-          break;
-        case 'CredentialsSignin':
-          setErrorMessage('Invalid email or password.');
-          break;
-        default:
-          setErrorMessage('An error occurred. Please try again.');
-      }
-    }
-  }, [error]);
 
   async function onSubmit(event) {
     event.preventDefault();
-    try {
-      const formData = new FormData(event.currentTarget);
-      const response = await doCredentialLogin(formData);
+    setErrorMessage(''); // Resetujemy komunikat o błędzie przed próbą logowania
 
-      if (!response.error) {
-        router.push("/home");
-      } else {
-        // Ustawiamy komunikat z odpowiedzi, tylko jeśli odpowiedź zawiera błąd
-        setErrorMessage(response.error.message || "Invalid credentials. Please try again.");
+    const formData = new FormData(event.currentTarget);
+    const response = await doCredentialLogin(formData);
+
+    if (response?.error) {
+      // Obsługa błędów na podstawie zwróconego obiektu błędu
+      switch (response.error) {
+        case 'Error: Incorrect password':
+          setErrorMessage('Invalid password. Please try again.');
+          break;
+        case 'Error: User not found':
+          setErrorMessage('Email not found. Please check your email.');
+          break;
+        default:
+          setErrorMessage('An unexpected error occurred. Please try again.');
       }
-    } catch (e) {
-      // Jeśli błąd nie został ustawiony wcześniej, wyświetlamy ten ogólny błąd
-      if (!errorMessage) {
-        setErrorMessage("An error occurred during login. Please try again.");
-      }
+    } else {
+      // Przekierowanie do strony głównej, gdy logowanie jest poprawne
+      router.push("/home");
     }
   }
 
