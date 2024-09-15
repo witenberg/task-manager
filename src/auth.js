@@ -2,14 +2,14 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from "./app/models/user";
+import User from "./models/user";
 import bcrypt from "bcryptjs";
 
 export const {
   handlers: { GET, POST },
   auth,
   signIn,
-  signOut
+  signOut,
 } = NextAuth({
   session: {
     strategy: 'jwt',
@@ -24,9 +24,8 @@ export const {
       async authorize(credentials) {
         if (credentials === null) return null;
 
-        //try {
         const user = await User.findOne({
-          email: credentials?.email
+          email: credentials?.email,
         });
 
         if (user) {
@@ -38,16 +37,12 @@ export const {
           if (isMatch) {
             return user;
           } else {
-            throw new CredentialsSignin("Invalid email address");
+            throw new Error("Invalid email address");
           }
         } else {
-
-          throw new CredentialsSignin("Invalid password");
-        };
-        /*} catch (e) {
-          throw e;
-        }*/
-      }
+          throw new Error("Invalid password");
+        }
+      },
     }),
 
     GoogleProvider({
@@ -70,8 +65,44 @@ export const {
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
+          scope: "read:user user:email",
         },
       },
-    })
+    }),
   ],
+
+  callbacks: {
+    async signIn({ user, account, profile }) {
+
+      const existingUser = await User.findOne({ email: user?.email });
+
+      if (!existingUser) {
+        await User.create({
+          name: user.name,
+          email: user.email,
+        });
+      } else {
+        console.log("ISTNIEJEEEEEEEEEEEEEEEEEEEE");
+      }
+
+      return true;
+    },
+
+    async jwt({ token, user }) {
+      if (user) {
+        // Zapisz ID użytkownika w tokenie
+        token.id = user.id;
+      } else {
+        // Pobierz użytkownika z bazy danych, jeśli jest to żądanie sesji
+        const dbUser = await User.findOne({ email: token.email });
+        token.id = dbUser?._id;
+      }
+      return token;
+    },
+
+    async session({ session, token, user }) {
+      session.user.id = token.id;
+      return session;
+    },
+  },
 });

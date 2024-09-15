@@ -5,7 +5,7 @@ import { dbConnect } from "../../../lib/mongo";
 import { findUserByEmail } from "../../../queries/users"
 
 export const POST = async (request) => {
-    const {name, email, password} = await request.json();
+    const { name, email, password } = await request.json();
 
     console.log(name, email, password);
 
@@ -35,5 +35,5 @@ export const POST = async (request) => {
             status: 500,
         });
     }
-    
+
 }

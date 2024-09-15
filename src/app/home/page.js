@@ -9,6 +9,8 @@ const HomePage = async () => {
 
   if (!session?.user) redirect("/");
 
+  console.log("USER ID:", session.user.id);
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <aside className="w-64 bg-white shadow-md flex flex-col items-center py-6">
@@ -42,7 +44,7 @@ const HomePage = async () => {
           </p>
         </header>
 
-        <TaskList />
+        <TaskList userId={session.user.id}/>
       </main>
     </div>
   );
