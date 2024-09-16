@@ -12,7 +12,7 @@ const Task = ({ task, onDelete, onToggleComplete, onEdit }) => {
     };
 
     const handleSave = () => {
-        onEdit(task.id, editedTask, editedDescription, completionDate);
+        onEdit(task._id, editedTask, editedDescription, completionDate);
         setIsEditing(false);
     };
 
@@ -61,7 +61,9 @@ const Task = ({ task, onDelete, onToggleComplete, onEdit }) => {
             )}
 
             <div className="mt-2 flex justify-end space-x-2">
-                <button onClick={() => onToggleComplete(task.id)} className="text-blue-600">
+                <button onClick={() => {
+                    onToggleComplete(task._id)
+                    }} className="text-blue-600">
                     {task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
                 </button>
                 {isEditing ? (

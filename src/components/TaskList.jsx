@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Task from "./Task";
-import dayjs from "dayjs";
 
 const TaskList = ({ userId }) => {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState("");
     const [newDescription, setNewDescription] = useState("");
-    const [newCompletionDate, setNewCompletionDate] = useState(""); // nowy stan dla daty ukończenia
+    const [newCompletionDate, setNewCompletionDate] = useState("");
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -16,7 +15,7 @@ const TaskList = ({ userId }) => {
                 const response = await fetch(`/api/home?userId=${userId}`);
                 if (response.ok) {
                     const tasksData = await response.json();
-                    setTasks(tasksData); // Aktualizacja lokalnego stanu
+                    setTasks(tasksData);
                 } else {
                     console.error('Failed to fetch tasks');
                 }
@@ -50,7 +49,7 @@ const TaskList = ({ userId }) => {
     
             if (response.ok) {
                 const createdTask = await response.json();
-                setTasks([...tasks, createdTask]); // Aktualizacja lokalnego stanu
+                setTasks([...tasks, createdTask]);
             } else {
                 console.error('Failed to create task');
             }
@@ -77,18 +76,47 @@ const TaskList = ({ userId }) => {
     }
 };
 
-    const handleToggleComplete = (id) => {
-        setTasks(
-            tasks.map((task) =>
-                task.id === id ? { ...task, completed: !task.completed } : task
-            )
-        );
-    };
+const handleToggleComplete = async (id) => {
+    console.log('Toggling completion for task with id:', id);
+    const taskToToggle = tasks.find(task => task._id === id);
+    
+    if (!taskToToggle) return;
+
+    const updatedCompletedStatus = !taskToToggle.completed;
+
+    try {
+        const response = await fetch(`/api/home?id=${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id,
+                title: taskToToggle.title,
+                description: taskToToggle.description,
+                completionDate: taskToToggle.completionDate,
+                completed: updatedCompletedStatus,
+            }),
+        });
+
+        if (response.ok) {
+            const updatedTask = await response.json();
+            setTasks(tasks.map(task =>
+                task._id === id ? updatedTask : task
+            ));
+        } else {
+            console.error('Failed to toggle task completion', await response.text());
+        }
+    } catch (error) {
+        console.error('Error toggling task completion:', error);
+    }
+};
+
 
     const handleEditTask = async (id, newTitle, newDescription, newCompletionDate) => {
         try {
             console.log("ID : ", id);
-            const response = await fetch('/api/home', {
+            const response = await fetch(`/api/home?id=${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ import Task from "../../../models/task";
 export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
-        const userId = searchParams.get('userId'); // Pobieranie userId z parametrów zapytania
+        const userId = searchParams.get('userId');
         
         if (!userId) {
             return new Response(JSON.stringify({ message: 'User ID not provided' }), { status: 400 });
@@ -50,20 +50,22 @@ export async function POST(req) {
 
 export async function PUT(req) {
     try {
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
+
         const data = await req.json();
         console.log("Received data for update:", data);
 
-        const { id, title, description, completionDate, completed } = data;
+        const { title, description, completionDate, completed } = data;
 
         if (!id) {
-            console.log("TASK ID REQUIRED AAAAA");
             return new Response(JSON.stringify({ message: 'Task ID is required' }), { status: 400 });
         }
 
-        const updatedTask = await Task.findByIdAndUpdate(_id, {
+        const updatedTask = await Task.findByIdAndUpdate(id, {
             title,
             description,
-            completionDate: completitionDate || null,
+            completionDate: completionDate || null,
             completed,
         }, { new: true });
 
