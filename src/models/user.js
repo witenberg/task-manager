@@ -10,7 +10,10 @@ const userSchema = new Schema({
         type: String,
     },
     password: {
-        //required: false,
+        type: String,
+    },
+    provider: {
+        required: true,
         type: String,
     },
 });

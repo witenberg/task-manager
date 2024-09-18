@@ -24,6 +24,7 @@ export const POST = async (request) => {
         name,
         email,
         password: hashedPassword,
+        provider: 'credentials',
     }
     try {
         await createUser(newUser);

@@ -29,6 +29,10 @@ export const {
         });
 
         if (user) {
+          if (user.provider !== 'credentials') {
+            throw new Error(`This email is registered with ${user.provider}. Please use ${user.provider} to log in.`);
+          }
+
           const isMatch = await bcrypt.compare(
             credentials.password,
             user.password,
@@ -76,13 +80,16 @@ export const {
 
       const existingUser = await User.findOne({ email: user?.email });
 
+      if (existingUser && existingUser.provider !== account.provider) {
+        throw new Error(`This email is already registered with ${existingUser.provider}. Please use ${existingUser.provider} to log in.`);
+    }
+
       if (!existingUser) {
         await User.create({
           name: user.name,
           email: user.email,
+          provider: account.provider,
         });
-      } else {
-        console.log("ISTNIEJEEEEEEEEEEEEEEEEEEEE");
       }
 
       return true;
@@ -90,10 +97,8 @@ export const {
 
     async jwt({ token, user }) {
       if (user) {
-        // Zapisz ID użytkownika w tokenie
         token.id = user.id;
       } else {
-        // Pobierz użytkownika z bazy danych, jeśli jest to żądanie sesji
         const dbUser = await User.findOne({ email: token.email });
         token.id = dbUser?._id;
       }

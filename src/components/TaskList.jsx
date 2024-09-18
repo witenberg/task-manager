@@ -8,6 +8,8 @@ const TaskList = ({ userId }) => {
     const [newTask, setNewTask] = useState("");
     const [newDescription, setNewDescription] = useState("");
     const [newCompletionDate, setNewCompletionDate] = useState("");
+    const [filterStatus, setFilterStatus] = useState("all"); // Filtrowanie (all, completed, incomplete)
+    const [sortBy, setSortBy] = useState("creationDate"); // Sortowanie (creationDate, completionDate)
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -28,6 +30,21 @@ const TaskList = ({ userId }) => {
             fetchTasks();
         }
     }, [userId]);
+
+
+    const filteredAndSortedTasks = tasks
+        .filter(task => {
+            if (filterStatus === "completed") return task.completed;
+            if (filterStatus === "incomplete") return !task.completed;
+            return true; // "all"
+        })
+        .sort((a, b) => {
+            if (sortBy === "completionDate") {
+                return new Date(a.completionDate) - new Date(b.completionDate);
+            }
+            return new Date(a.creationDate) - new Date(b.creationDate);
+        });
+
 
     const handleAddTask = async () => {
         if (newTask.trim()) {
@@ -83,6 +100,9 @@ const handleToggleComplete = async (id) => {
     if (!taskToToggle) return;
 
     const updatedCompletedStatus = !taskToToggle.completed;
+    const updatedCompletionDate = updatedCompletedStatus 
+        ? (taskToToggle.completionDate || new Date().toISOString())
+        : taskToToggle.completionDate;
 
     try {
         const response = await fetch(`/api/home?id=${id}`, {
@@ -94,7 +114,7 @@ const handleToggleComplete = async (id) => {
                 id,
                 title: taskToToggle.title,
                 description: taskToToggle.description,
-                completionDate: taskToToggle.completionDate,
+                completionDate: updatedCompletionDate,
                 completed: updatedCompletedStatus,
             }),
         });
@@ -125,7 +145,7 @@ const handleToggleComplete = async (id) => {
                     id,
                     title: newTitle,
                     description: newDescription,
-                    completionDate: newCompletionDate || null,
+                    completionDate: newCompletionDate || tasks.find(task => task._id === id)?.completionDate,
                     completed: tasks.find(task => task._id === id)?.completed,
                 }),
             });
@@ -146,20 +166,21 @@ const handleToggleComplete = async (id) => {
 
     return (
         <section className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Your Tasks</h3>
-            <div className="mb-4">
+            {/* Task Creation Form */}
+            <div className="mb-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">Add New Task</h3>
                 <input
                     type="text"
                     value={newTask}
                     onChange={(e) => setNewTask(e.target.value)}
                     className="p-2 border border-gray-300 rounded-md w-full"
-                    placeholder="Add a new task"
+                    placeholder="Task Title"
                 />
                 <textarea
                     value={newDescription}
                     onChange={(e) => setNewDescription(e.target.value)}
                     className="p-2 border border-gray-300 rounded-md w-full mt-2"
-                    placeholder="Add a description"
+                    placeholder="Task Description"
                 />
                 <input
                     type="date"
@@ -175,8 +196,30 @@ const handleToggleComplete = async (id) => {
                 </button>
             </div>
 
-            {tasks.length > 0 ? (
-                tasks.map((task) => (
+            {/* Filter and Sort Options */}
+            <div className="mb-6">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <label className="mr-2">Filter:</label>
+                        <select id="filterStatus" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="p-2 border border-gray-300 rounded-md">
+                            <option value="all">All</option>
+                            <option value="completed">Completed</option>
+                            <option value="incomplete">Incomplete</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="mr-2">Sort by:</label>
+                        <select id="sortBy" value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="p-2 border border-gray-300 rounded-md">
+                            <option value="creationDate">Creation Date</option>
+                            <option value="completionDate">Completion Date</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Task List */}
+            {filteredAndSortedTasks.length > 0 ? (
+                filteredAndSortedTasks.map((task) => (
                     <Task
                         key={task._id}
                         task={task}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 
 const Task = ({ task, onDelete, onToggleComplete, onEdit }) => {
@@ -15,6 +15,13 @@ const Task = ({ task, onDelete, onToggleComplete, onEdit }) => {
         onEdit(task._id, editedTask, editedDescription, completionDate);
         setIsEditing(false);
     };
+
+    useEffect(() => {
+        // Update state if the task props change
+        setEditedTask(task.title);
+        setEditedDescription(task.description || "");
+        setCompletionDate(task.completionDate ? dayjs(task.completionDate).format('YYYY-MM-DD') : "");
+    }, [task]);
 
     return (
         <div className={`p-4 rounded-lg shadow ${task.completed ? 'bg-green-100' : 'bg-gray-100'} mb-2`}>
@@ -49,12 +56,14 @@ const Task = ({ task, onDelete, onToggleComplete, onEdit }) => {
                     <p className="text-sm text-gray-500">
                         Created: {dayjs(task.creationDate).format('DD/MM/YYYY')}
                     </p>
-                    <p className="text-sm text-gray-500">
-                        Due: {task.completionDate ? dayjs(task.completionDate).format('DD/MM/YYYY') : 'No deadline set'}
-                    </p>
-                    {task.completed && task.completionDate && (
+                    {!task.completed && (
+                        <p className="text-sm text-gray-500">
+                            Due: {task.completionDate ? dayjs(task.completionDate).format('DD/MM/YYYY') : 'No deadline set'}
+                        </p>
+                    )}
+                    {task.completed && (
                         <p className="text-sm text-green-600">
-                            Completed: {dayjs(task.completionDate).format('DD/MM/YYYY')}
+                            Completed: {dayjs(new Date()).format('DD/MM/YYYY')}
                         </p>
                     )}
                 </>
@@ -63,7 +72,7 @@ const Task = ({ task, onDelete, onToggleComplete, onEdit }) => {
             <div className="mt-2 flex justify-end space-x-2">
                 <button onClick={() => {
                     onToggleComplete(task._id)
-                    }} className="text-blue-600">
+                }} className="text-blue-600">
                     {task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
                 </button>
                 {isEditing ? (
