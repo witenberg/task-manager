@@ -6,7 +6,7 @@ const taskSchema = new mongoose.Schema({
   completed: { type: Boolean, default: false },
   creationDate: { type: Date, default: Date.now },
   completionDate: { type: Date },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // referencja do użytkownika
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 const Task = mongoose.models.Task || mongoose.model('Task', taskSchema);

@@ -45,6 +45,18 @@ const HomePage = async () => {
         </header>
 
         <TaskList userId={session.user.id}/>
+
+        <div className="mt-8">
+          <form method="POST" action={session?.user?.role === 'admin' ? "/tickets/admin" : "/tickets/user"}>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Tickets
+            </button>
+          </form>
+        </div>
+
       </main>
     </div>
   );
