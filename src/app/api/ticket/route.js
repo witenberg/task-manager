@@ -20,8 +20,22 @@ export const GET = async () => {
 };
 
 export const PUT = async (req) => {
-    const { id, status } = await req.json();
+    const { ticketId, status } = await req.json();  // Odbierz ID i status z treści żądania
+
+    console.log("TICKET ID: ", ticketId);
+    console.log("STATUS: ", status);
+
     await dbConnect();
-    await updateTicket(id, { status });
-    return new NextResponse("Ticket updated", { status: 200 });
+
+    try {
+        const updatedTicket = await updateTicket(ticketId, { status });
+
+        if (!updatedTicket) {
+            return new NextResponse("Ticket not found", { status: 404 });
+        }
+
+        return new NextResponse(JSON.stringify(updatedTicket), { status: 200 });
+    } catch (error) {
+        return new NextResponse(`Error updating ticket: ${error.message}`, { status: 500 });
+    }
 };

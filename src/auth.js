@@ -98,15 +98,18 @@ export const {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       } else {
         const dbUser = await User.findOne({ email: token.email });
         token.id = dbUser?._id;
+        token.role = dbUser?.role;
       }
       return token;
     },
 
     async session({ session, token, user }) {
       session.user.id = token.id;
+      session.user.role = token.role;
       return session;
     },
   },
