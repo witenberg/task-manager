@@ -74,10 +74,30 @@ const TicketListAdmin = () => {
                     <li key={ticket._id} className="bg-white shadow-md rounded-lg p-6">
                         <h3 className="text-xl font-semibold text-gray-700 mb-2">{ticket.title}</h3>
                         <p className="text-gray-600 mb-4">{ticket.description}</p>
+
+                        {/* Wyświetlanie kategorii */}
+                        <p className="text-sm text-gray-500 mb-4">Category: {ticket.category}</p>
+
+                        {/* Wyświetlanie statusu */}
                         <p className="text-sm text-gray-500 mb-4">
                             Status: <span className={`font-semibold ${ticket.status === 'closed' ? 'text-red-500' : 'text-blue-500'}`}>{ticket.status}</span>
                         </p>
+
+                        {/* Wyświetlanie daty utworzenia */}
                         <p className="text-sm text-gray-500 mb-4">Created At: {new Date(ticket.createdAt).toLocaleString()}</p>
+
+                        {/* Wyświetlanie zadania powiązanego z ticketem (jeśli istnieje) */}
+                        {ticket.taskId && (
+                            <p className="text-sm text-gray-500 mb-4">Related Task ID: {ticket.taskId}</p>
+                        )}
+
+                        {/* Wyświetlanie zdjęcia */}
+                        {ticket.imageUrl && (
+                            <div className="mb-4">
+                                <img src={ticket.imageUrl} alt="Ticket screenshot" className="w-full h-auto max-w-xs object-cover rounded-md shadow-md" />
+                            </div>
+                        )}
+
                         <div className="flex space-x-4">
                             <button
                                 onClick={() => updateTicketStatus(ticket._id, 'in-progress')}

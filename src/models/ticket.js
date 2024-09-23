@@ -9,10 +9,18 @@ const ticketSchema = new Schema({
         required: true,
         type: String,
     },
+    category: {
+        type: String,
+        enum: ['task', 'bug', 'feature', 'other'],
+        required: true,
+    },
     status: {
         type: String,
         enum: ['open', 'in-progress', 'closed'],
         default: 'open',
+    },
+    imageUrl: {
+        type: String,
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -25,7 +33,9 @@ const ticketSchema = new Schema({
     taskId: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Task',
-        required: true,
+        required: function() {
+            return this.category === 'problem with task';
+        },
     },
     createdAt: {
         type: Date,
