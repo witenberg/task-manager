@@ -10,6 +10,8 @@ const TicketForm = ({ userId }) => {
   const [ticketTitle, setTicketTitle] = useState(''); // Nowe pole na tytuł zgłoszenia
   const [selectedTaskTitle, setSelectedTaskTitle] = useState('');
   const [screenshot, setScreenshot] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+
 
   useEffect(() => {
     async function fetchTasks() {
@@ -46,10 +48,12 @@ const TicketForm = ({ userId }) => {
 
       if (response.ok) {
         setTicketDescription('');
-        setTicketTitle(''); 
+        setTicketTitle('');
         setSelectedTask('');
         setSelectedTaskTitle('');
         setScreenshot(null);
+        setSelectedCategory('');
+        setSuccessMessage('Ticket został pomyślnie utworzony!');
       } else {
         console.error("Failed to create ticket");
       }
@@ -67,6 +71,12 @@ const TicketForm = ({ userId }) => {
 
   return (
     <div>
+      {successMessage && (
+        <div className="mb-4 text-green-500">
+          {successMessage}
+        </div>
+      )}
+
       <div className="mb-4">
         <label htmlFor="category" className="block text-gray-700">
           Select Category
