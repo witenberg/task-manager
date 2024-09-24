@@ -11,10 +11,9 @@ export async function createTicket(ticketData) {
     }
 }
 
-export async function findAllTickets() {
+export const findAllTickets = () => {
     try {
-        const tickets = await Ticket.find().populate('createdBy', 'name email').populate('assignedTo', 'name email');
-        return tickets;
+        return Ticket.find().populate('createdBy', 'name email').populate('assignedTo', 'name email');
     } catch (error) {
         console.error("Error fetching tickets: ", error);
         throw new Error(error.message);

@@ -24,7 +24,6 @@ export const POST = async (req) => {
 
   if (imageFile && imageFile.size > 0) {
     try {
-      // Funkcja czekająca na przesłanie pliku do Cloudinary
       const uploadImage = async () => {
         return new Promise(async (resolve, reject) => {
           const uploadStream = cloudinary.v2.uploader.upload_stream(
@@ -38,21 +37,19 @@ export const POST = async (req) => {
             }
           );
 
-          // Konwertuj plik do bufora i prześlij
-          const arrayBuffer = await imageFile.arrayBuffer(); // Poprawiono asynchroniczne pobieranie arrayBuffer
+          const arrayBuffer = await imageFile.arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
           uploadStream.end(buffer);
         });
       };
 
-      imageUrl = await uploadImage();  // Czekaj na zakończenie przesyłania
+      imageUrl = await uploadImage();
     } catch (error) {
       console.error("Error uploading to Cloudinary:", error);
       return new NextResponse("Error uploading image", { status: 500 });
     }
   }
 
-  // Tworzenie nowego ticketa z linkiem do obrazu
   const newTicket = await createTicket({
     title,
     description,
@@ -67,20 +64,20 @@ export const POST = async (req) => {
 
 export const GET = async () => {
   await dbConnect();
-  const tickets = await findAllTickets();
+  const tickets = await findAllTickets().populate('createdBy', 'email name').populate('assignedTo', 'email name');
   return new NextResponse(JSON.stringify(tickets), { status: 200 });
 };
 
 export const PUT = async (req) => {
-  const { ticketId, status } = await req.json();
-
-  console.log("TICKET ID: ", ticketId);
-  console.log("STATUS: ", status);
+  const { ticketId, status, assignedTo } = await req.json();
 
   await dbConnect();
 
   try {
-    const updatedTicket = await updateTicket(ticketId, { status });
+    const updateFields = { status };
+    if (assignedTo) updateFields.assignedTo = assignedTo;
+
+    const updatedTicket = await updateTicket(ticketId, updateFields);
 
     if (!updatedTicket) {
       return new NextResponse("Ticket not found", { status: 404 });
