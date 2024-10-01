@@ -19,6 +19,11 @@ const ticketSchema = new Schema({
         enum: ['open', 'in-progress', 'closed'],
         default: 'open',
     },
+    priority: {
+        type: String,
+        enum: ['low', 'medium', 'high'],
+        default: 'medium',
+    },
     imageUrl: {
         type: String,
     },

@@ -6,7 +6,7 @@ import Sidebar from '../../../components/Sidebar';
 const AdminTicketPage = async () => {
   const session = await auth();
 
-  if (session?.user?.role != "admin") {
+  if (session?.user?.role !== "admin") {
     redirect('/home/');
   }
 
@@ -16,7 +16,7 @@ const AdminTicketPage = async () => {
 
       <main className="flex-1 p-6 ml-64">
         <h1 className="text-2xl font-bold mb-4">Manage tickets</h1>
-        <TicketListAdmin />
+        <TicketListAdmin adminId={session.user.id} />
       </main>
     </div>
   );

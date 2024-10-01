@@ -16,6 +16,7 @@ export const POST = async (req) => {
   const title = formData.get("title");
   const description = formData.get("description");
   const category = formData.get("category");
+  const priority = formData.get("priority"); // Dodane pole priorytetu
 
   await dbConnect();
 
@@ -24,6 +25,7 @@ export const POST = async (req) => {
 
   if (imageFile && imageFile.size > 0) {
     try {
+      // Funkcja czekająca na przesłanie pliku do Cloudinary
       const uploadImage = async () => {
         return new Promise(async (resolve, reject) => {
           const uploadStream = cloudinary.v2.uploader.upload_stream(
@@ -37,54 +39,47 @@ export const POST = async (req) => {
             }
           );
 
-          const arrayBuffer = await imageFile.arrayBuffer();
+          // Konwertuj plik do bufora i prześlij
+          const arrayBuffer = await imageFile.arrayBuffer(); // Poprawiono asynchroniczne pobieranie arrayBuffer
           const buffer = Buffer.from(arrayBuffer);
           uploadStream.end(buffer);
         });
       };
 
-      imageUrl = await uploadImage();
+      imageUrl = await uploadImage();  // Czekaj na zakończenie przesyłania
     } catch (error) {
       console.error("Error uploading to Cloudinary:", error);
       return new NextResponse("Error uploading image", { status: 500 });
     }
   }
 
-  const newTicket = await createTicket({
-    title,
-    description,
-    category,
-    createdBy: userId,
-    taskId: category === "task" ? taskId : null,
-    imageUrl,
-  });
-
-  return new NextResponse(JSON.stringify(newTicket), { status: 201 });
+  try {
+    const newTicket = await createTicket({ userId, taskId, title, description, category, priority, screenshot: imageUrl });
+    return NextResponse.json(newTicket, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 };
 
 export const GET = async () => {
   await dbConnect();
-  const tickets = await findAllTickets().populate('createdBy', 'email name').populate('assignedTo', 'email name');
-  return new NextResponse(JSON.stringify(tickets), { status: 200 });
+  try {
+    const tickets = await findAllTickets();
+    return NextResponse.json(tickets, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 };
 
 export const PUT = async (req) => {
-  const { ticketId, status, assignedTo } = await req.json();
+  const { ticketId, status, assignedTo, priority } = await req.json();
 
   await dbConnect();
 
   try {
-    const updateFields = { status };
-    if (assignedTo) updateFields.assignedTo = assignedTo;
-
-    const updatedTicket = await updateTicket(ticketId, updateFields);
-
-    if (!updatedTicket) {
-      return new NextResponse("Ticket not found", { status: 404 });
-    }
-
-    return new NextResponse(JSON.stringify(updatedTicket), { status: 200 });
+    const updatedTicket = await updateTicket(ticketId, { status, assignedTo, priority });
+    return NextResponse.json(updatedTicket, { status: 200 });
   } catch (error) {
-    return new NextResponse(`Error updating ticket: ${error.message}`, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 };

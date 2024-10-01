@@ -13,12 +13,15 @@ export async function createTicket(ticketData) {
 
 export const findAllTickets = () => {
     try {
-        return Ticket.find().populate('createdBy', 'name email').populate('assignedTo', 'name email');
+      return Ticket.find()
+        .populate('createdBy', 'name email')
+        .populate('assignedTo', 'name email')
+        .populate('taskId'); // Dodaj populację dla pola taskId
     } catch (error) {
-        console.error("Error fetching tickets: ", error);
-        throw new Error(error.message);
+      console.error("Error fetching tickets: ", error);
+      throw new Error(error.message);
     }
-}
+  };
 
 export async function updateTicket(id, updates) {
     try {
