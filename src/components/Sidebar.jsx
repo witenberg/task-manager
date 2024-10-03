@@ -29,7 +29,7 @@ const Sidebar = ({ user, currentPage }) => {
       <div className="mt-auto">
         {currentPage !== 'tickets' && (
           <>
-            {user?.role === 'admin' ? (
+            {user?.role === 'admin' || user?.role === 'root' ? (
               <form method="POST" action="/tickets/admin">
                 <button
                   type="submit"
