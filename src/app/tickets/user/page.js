@@ -2,6 +2,7 @@ import { auth } from '../../../auth';
 import TicketForm from '../../../components/TicketForm';
 import { redirect } from "next/navigation";
 import Sidebar from '../../../components/Sidebar';
+import TicketListUser from '../../../components/TicketListUser';
 
 const UserTicketPage = async () => {
   const session = await auth();
@@ -17,6 +18,7 @@ const UserTicketPage = async () => {
       <main className="flex-1 p-6 ml-64">
         <h1 className="text-2xl font-bold mb-4">Add ticket</h1>
         <TicketForm userId={session.user.id} />
+        <TicketListUser userId={session.user.id} />
       </main>
     </div>
   );

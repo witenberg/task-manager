@@ -39,7 +39,7 @@ const ticketSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Task',
         required: function() {
-            return this.category === 'problem with task';
+            return this.category === 'task';
         },
     },
     createdAt: {

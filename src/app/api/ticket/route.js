@@ -16,7 +16,7 @@ export const POST = async (req) => {
   const title = formData.get("title");
   const description = formData.get("description");
   const category = formData.get("category");
-  const priority = formData.get("priority"); // Dodane pole priorytetu
+  const priority = formData.get("priority");
 
   await dbConnect();
 
@@ -53,8 +53,21 @@ export const POST = async (req) => {
     }
   }
 
+  const ticketData = {
+    userId,
+    title,
+    description,
+    category,
+    priority,
+    screenshot: imageUrl
+  };
+  
+  if (category === 'task') {
+    ticketData.taskId = taskId;
+  }
+
   try {
-    const newTicket = await createTicket({ userId, taskId, title, description, category, priority, screenshot: imageUrl });
+    const newTicket = await createTicket(ticketData);
     return NextResponse.json(newTicket, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -67,6 +80,7 @@ export const GET = async () => {
     const tickets = await findAllTickets();
     return NextResponse.json(tickets, { status: 200 });
   } catch (error) {
+    console.log("error in GET tickets: ", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 };

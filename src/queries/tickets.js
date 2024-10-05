@@ -11,12 +11,13 @@ export async function createTicket(ticketData) {
     }
 }
 
-export const findAllTickets = () => {
+export const findAllTickets = async() => {
     try {
-      return Ticket.find()
+      const tickets = await Ticket.find()
         .populate('createdBy', 'name email')
         .populate('assignedTo', 'name email')
-        .populate('taskId'); // Dodaj populację dla pola taskId
+        .populate('taskId');
+        return tickets;
     } catch (error) {
       console.error("Error fetching tickets: ", error);
       throw new Error(error.message);
