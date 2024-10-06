@@ -59,7 +59,7 @@ export const POST = async (req) => {
     description,
     category,
     priority,
-    screenshot: imageUrl
+    imageUrl,
   };
   
   if (category === 'task') {
