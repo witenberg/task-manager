@@ -28,6 +28,7 @@ const ticketSchema = new Schema({
         type: String,
     },
     createdBy: {
+        required: true,
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },

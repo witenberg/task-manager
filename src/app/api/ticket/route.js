@@ -11,7 +11,7 @@ cloudinary.v2.config({
 
 export const POST = async (req) => {
   const formData = await req.formData();
-  const userId = formData.get("userId");
+  const createdBy = formData.get("userId");
   const taskId = formData.get("taskId");
   const title = formData.get("title");
   const description = formData.get("description");
@@ -54,7 +54,7 @@ export const POST = async (req) => {
   }
 
   const ticketData = {
-    userId,
+    createdBy,
     title,
     description,
     category,

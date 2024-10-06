@@ -2,16 +2,14 @@
 
 import { useState, useEffect } from "react";
 
-const TicketForm = ({ userId }) => {
+const TicketForm = ({ userId, refreshTickets }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTask, setSelectedTask] = useState('');
   const [ticketDescription, setTicketDescription] = useState('');
-  const [ticketTitle, setTicketTitle] = useState(''); // Nowe pole na tytuł zgłoszenia
-  const [selectedTaskTitle, setSelectedTaskTitle] = useState('');
+  const [ticketTitle, setTicketTitle] = useState('');
   const [screenshot, setScreenshot] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-
 
   useEffect(() => {
     async function fetchTasks() {
@@ -50,10 +48,14 @@ const TicketForm = ({ userId }) => {
         setTicketDescription('');
         setTicketTitle('');
         setSelectedTask('');
-        setSelectedTaskTitle('');
         setScreenshot(null);
         setSelectedCategory('');
         setSuccessMessage('Ticket został pomyślnie utworzony!');
+
+        // Wywołaj `refreshTickets` po pomyślnym dodaniu nowego ticketa
+        if (refreshTickets) {
+          refreshTickets();
+        }
       } else {
         console.error("Failed to create ticket");
       }
@@ -61,7 +63,7 @@ const TicketForm = ({ userId }) => {
       console.error("Error creating ticket:", error);
     }
   }
-
+  
   function handleTaskChange(e) {
     const taskId = e.target.value;
     const task = tasks.find(task => task._id === taskId);
@@ -104,7 +106,7 @@ const TicketForm = ({ userId }) => {
             <input
               id="title"
               type="text"
-              value={ticketTitle}  // Pole tytułu
+              value={ticketTitle}
               onChange={(e) => setTicketTitle(e.target.value)}
               className="w-full px-3 py-2 border"
               required

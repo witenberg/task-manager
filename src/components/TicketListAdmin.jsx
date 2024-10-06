@@ -253,98 +253,99 @@ const TicketListAdmin = ({ role, adminId }) => {
                     </div>
 
                     <ul className="space-y-4">
-    {filteredAndSortedTickets.map(ticket => (
-        <li key={ticket._id} className="bg-white shadow-md rounded-lg p-6">
-            {/* Informacje podstawowe */}
-            <p className="text-gray-600 mb-2">Category: {ticket.category}</p>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">{ticket.title}</h3>
-            <p className="text-sm text-gray-500 mb-2"><span className="font-semibold">Description:</span> {ticket.description}</p>
-            <p className="text-sm text-gray-500 mb-2">Created At: {new Date(ticket.createdAt).toLocaleString()}</p>
+                        {filteredAndSortedTickets.map(ticket => (
+                            <li key={ticket._id} className="bg-white shadow-md rounded-lg p-6">
+                                {/* Informacje podstawowe */}
+                                <p className="text-gray-600 mb-2">Category: {ticket.category}</p>
+                                <h3 className="text-xl font-semibold text-gray-700 mb-2">{ticket.title}</h3>
+                                <p className="text-sm text-gray-500 mb-2"><span className="font-semibold">Description:</span> {ticket.description}</p>
+                                <p className="text-sm text-gray-500 mb-2">Created At: {new Date(ticket.createdAt).toLocaleString()}</p>
 
-            {/* Rozwinięcie ticketa */}
-            <button
-                className="text-blue-500 hover:underline mb-4"
-                onClick={() => toggleTicketExpansion(ticket._id)}
-            >
-                {expandedTicketId === ticket._id ? "Collapse" : "Expand"}
-            </button>
+                                {/* Rozwinięcie ticketa */}
+                                <button
+                                    className="text-blue-500 hover:underline mb-4"
+                                    onClick={() => toggleTicketExpansion(ticket._id)}
+                                >
+                                    {expandedTicketId === ticket._id ? "Collapse" : "Expand"}
+                                </button>
 
-            {expandedTicketId === ticket._id && (
-                <div className="border-t border-gray-200 pt-4">
-                    {/* Szczegóły ticketa */}
-                    {ticket.taskId && (
-                        <p className="text-sm text-gray-500 mb-2"><span className="font-semibold">Related Task:</span> {ticket.taskId.title}</p>
-                    )}
+                                {expandedTicketId === ticket._id && (
+                                    <div className="border-t border-gray-200 pt-4">
+                                        {/* Szczegóły ticketa */}
+                                        {ticket.taskId && (
+                                            <p className="text-sm text-gray-500 mb-2"><span className="font-semibold">Related Task:</span> {ticket.taskId.title}</p>
+                                        )}
 
-                    {ticket.taskId && (
-                        <p className="text-sm text-gray-500 mb-2"><span className="font-semibold">Task Description:</span> {ticket.taskId.description}</p>
-                    )}
+                                        {ticket.taskId && (
+                                            <p className="text-sm text-gray-500 mb-2"><span className="font-semibold">Task Description:</span> {ticket.taskId.description}</p>
+                                        )}
 
-                    {ticket.imageUrl && (
-                        <div className="mb-4">
-                            <img src={ticket.imageUrl} alt="Ticket screenshot" className="w-full h-auto max-w-xs object-cover rounded-md shadow-md" />
-                        </div>
-                    )}
+                                        {ticket.imageUrl && (
+                                            <div className="mb-4">
+                                                <img src={ticket.imageUrl} alt="Ticket screenshot" className="w-full h-auto max-w-xs object-cover rounded-md shadow-md" />
+                                            </div>
+                                        )}
 
-                    <p className="text-sm text-gray-500 mb-2">Created By:
-                        {ticket.createdBy ? ` ${ticket.createdBy.name} (${ticket.createdBy.email})` : ' Unknown'}
-                    </p>
-                </div>
-            )}
+                                        <p className="text-sm text-gray-500 mb-2">Created By:
+                                            {ticket.createdBy ? ` ${ticket.createdBy.name} (${ticket.createdBy.email})` : ' Unknown'}
+                                        </p>
+                                    </div>
+                                )}
 
-            {/* Kolorowanie priorytetów */}
-            <p className="text-sm mb-2">
-                <span className="font-semibold">Priority:</span>
-                <span className={`ml-2 px-2 py-1 rounded ${ticket.priority === 'high' ? 'bg-red-500 text-white' :
-                    ticket.priority === 'medium' ? 'bg-yellow-500 text-white' :
-                        'bg-green-500 text-white'
-                    }`}>
-                    {ticket.priority || 'None'}
-                </span>
-            </p>
+                                {/* Kolorowanie priorytetów */}
+                                <p className="text-sm mb-2">
+                                    <span className="font-semibold">Priority:</span>
+                                    <span className={`ml-2 px-2 py-1 rounded ${ticket.priority === 'high' ? 'bg-red-500 text-white' :
+                                        ticket.priority === 'medium' ? 'bg-yellow-500 text-white' :
+                                            'bg-green-500 text-white'
+                                        }`}>
+                                        {ticket.priority || 'None'}
+                                    </span>
+                                </p>
 
-            {/* Przyciski zarządzania statusem ticketa i czatem */}
-            <div className="flex justify-between items-center">
-                <div className="flex space-x-4">
-                    {ticket.status === 'open' && (
-                        <button
-                            onClick={() => updateTicketStatus(ticket._id, 'in-progress')}
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                        >
-                            Start Progress
-                        </button>
-                    )}
+                                {/* Przyciski zarządzania statusem ticketa i czatem */}
+                                <div className="flex justify-between items-center">
+                                    <div className="flex space-x-4">
+                                        {ticket.status === 'open' && (
+                                            <button
+                                                onClick={() => updateTicketStatus(ticket._id, 'in-progress')}
+                                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                            >
+                                                Start Progress
+                                            </button>
+                                        )}
 
-                    {ticket.status === 'in-progress' && (
-                        <button
-                            onClick={() => updateTicketStatus(ticket._id, 'closed')}
-                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                        >
-                            Close Ticket
-                        </button>
-                    )}
-                </div>
+                                        {ticket.status === 'in-progress' && (
+                                            <button
+                                                onClick={() => updateTicketStatus(ticket._id, 'closed')}
+                                                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                            >
+                                                Close Ticket
+                                            </button>
+                                        )}
+                                    </div>
 
-                {/* Przyciski czatu */}
-                <button
-                    className="ml-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    onClick={() => openChat(ticket)}
-                >
-                    Otwórz czat
-                </button>
-            </div>
+                                    {ticket.status === 'in-progress' && (
+                                        <button
+                                            className="ml-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                            onClick={() => openChat(ticket)}
+                                        >
+                                            Otwórz czat
+                                        </button>
+                                    )}
+                                </div>
 
-            {activeChatTicket && (
-                <ChatBox
-                    ticket={activeChatTicket}
-                    userId={adminId}
-                    userRole='admin'
-                    onClose={closeChat}
-                />
-            )}
-        </li>
-    ))}
-</ul>
+                                {activeChatTicket && (
+                                    <ChatBox
+                                        ticket={activeChatTicket}
+                                        userId={adminId}
+                                        userRole='admin'
+                                        onClose={closeChat}
+                                    />
+                                )}
+                            </li>
+                        ))}
+                    </ul>
 
                 </div>
             )}

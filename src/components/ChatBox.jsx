@@ -3,8 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 const ChatBox = ({ ticket, userId, userRole, onClose }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
-    const messagesEndRef = useRef(null); // Ref do przewinięcia na dół
-
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -60,7 +59,7 @@ const ChatBox = ({ ticket, userId, userRole, onClose }) => {
             </div>
 
             {/* Kontener wiadomości */}
-            <div className="flex-1 p-4 overflow-y-auto" style={{ maxHeight: 'calc(50vh - 110px)' }}>
+            <div className="flex-1 p-16 overflow-y-auto" style={{ maxHeight: 'calc(50vh - 110px)' }}>
                 {messages.map((msg) => (
                     <div 
                     key={msg._id} 

@@ -16,8 +16,7 @@ const UserTicketPage = async () => {
       <Sidebar user={session.user} currentPage="tickets" />
 
       <main className="flex-1 p-6 ml-64">
-        <h1 className="text-2xl font-bold mb-4">Add ticket</h1>
-        <TicketForm userId={session.user.id} />
+        <h1 className="text-2xl font-bold mb-4">Your tickets</h1>
         <TicketListUser userId={session.user.id} />
       </main>
     </div>
