@@ -52,7 +52,6 @@ const TicketForm = ({ userId, refreshTickets }) => {
         setSelectedCategory('');
         setSuccessMessage('Ticket został pomyślnie utworzony!');
 
-        // Wywołaj `refreshTickets` po pomyślnym dodaniu nowego ticketa
         if (refreshTickets) {
           refreshTickets();
         }

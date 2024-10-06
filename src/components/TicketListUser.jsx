@@ -10,7 +10,6 @@ const TicketUserList = ({ userId }) => {
     const [sortBy, setSortBy] = useState("creationDate");
     const [openChatTicketId, setOpenChatTicketId] = useState(null);
 
-    // Funkcja do pobierania ticketów
     const fetchTickets = async () => {
         try {
             const response = await fetch(`/api/ticket/`);
@@ -24,17 +23,14 @@ const TicketUserList = ({ userId }) => {
         }
     };
 
-    // Wywołaj `fetchTickets` przy pierwszym renderowaniu komponentu
     useEffect(() => {
         fetchTickets();
     }, []);
 
-    // Funkcja do przełączania widoczności ChatBox
     const toggleChatBox = (ticketId) => {
         setOpenChatTicketId(openChatTicketId === ticketId ? null : ticketId);
     };
 
-    // Filtruj i sortuj tickety
     const filteredTickets = tickets
         .filter(ticket => ticket.createdBy && ticket.createdBy._id === userId)
         .filter(ticket => {
@@ -58,7 +54,6 @@ const TicketUserList = ({ userId }) => {
         <div className="max-w-4xl mx-auto py-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-6">Add ticket</h2>
 
-            {/* Przekaż funkcję `fetchTickets` do `TicketForm` */}
             <TicketForm userId={userId} refreshTickets={fetchTickets} />
 
             <div className="mb-8" />

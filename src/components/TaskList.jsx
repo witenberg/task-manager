@@ -8,8 +8,8 @@ const TaskList = ({ userId }) => {
     const [newTask, setNewTask] = useState("");
     const [newDescription, setNewDescription] = useState("");
     const [newCompletionDate, setNewCompletionDate] = useState("");
-    const [filterStatus, setFilterStatus] = useState("all"); // Filtrowanie (all, completed, incomplete)
-    const [sortBy, setSortBy] = useState("creationDate"); // Sortowanie (creationDate, completionDate)
+    const [filterStatus, setFilterStatus] = useState("all");
+    const [sortBy, setSortBy] = useState("creationDate");
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -36,7 +36,7 @@ const TaskList = ({ userId }) => {
         .filter(task => {
             if (filterStatus === "completed") return task.completed;
             if (filterStatus === "incomplete") return !task.completed;
-            return true; // "all"
+            return true;
         })
         .sort((a, b) => {
             if (sortBy === "completionDate") {

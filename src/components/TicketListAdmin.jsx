@@ -29,7 +29,6 @@ const TicketListAdmin = ({ role, adminId }) => {
         fetchTicketsAndAdmins();
     }, []);
 
-    // Funkcja do filtrowania przypisanych ticketów
     const getAssignedTickets = (adminId) => {
         return tickets.filter(ticket => ticket.assignedTo && ticket.assignedTo._id === adminId);
     };

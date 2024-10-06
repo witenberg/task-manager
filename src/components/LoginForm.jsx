@@ -11,7 +11,7 @@ const LoginForm = () => {
 
   async function onSubmit(event) {
     event.preventDefault();
-    setErrorMessage(''); // reset komunikatu o bledzie
+    setErrorMessage('');
 
     const formData = new FormData(event.currentTarget);
     const response = await doCredentialLogin(formData);

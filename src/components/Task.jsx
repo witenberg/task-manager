@@ -17,7 +17,6 @@ const Task = ({ task, onDelete, onToggleComplete, onEdit }) => {
     };
 
     useEffect(() => {
-        // Update state if the task props change
         setEditedTask(task.title);
         setEditedDescription(task.description || "");
         setCompletionDate(task.completionDate ? dayjs(task.completionDate).format('YYYY-MM-DD') : "");

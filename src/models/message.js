@@ -1,6 +1,4 @@
-// models/message.js
-
-import mongoose from 'mongoose';
+import mongoose, { Schema } from "mongoose";
 
 const MessageSchema = new mongoose.Schema({
   ticketId: {
