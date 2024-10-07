@@ -39,8 +39,12 @@ const ChatBox = ({ ticket, userId, userRole, onClose }) => {
             });
 
             if (response.ok) {
-                const newMessage = await response.json();
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
+                const newMessageData = await response.json();
+                const formattedMessage = {
+                    ...newMessageData,
+                    senderId: { _id: userId },
+                };
+                setMessages((prevMessages) => [...prevMessages, formattedMessage]);
                 setNewMessage("");
             }
         } catch (error) {
@@ -59,12 +63,12 @@ const ChatBox = ({ ticket, userId, userRole, onClose }) => {
             </div>
 
             {/* Kontener wiadomości */}
-            <div className="flex-1 p-16 overflow-y-auto" style={{ maxHeight: 'calc(50vh - 110px)' }}>
+            <div className="flex-1 p-4 overflow-y-auto" style={{ maxHeight: 'calc(50vh - 110px)' }}>
                 {messages.map((msg) => (
                     <div 
                     key={msg._id} 
-                    className={`mb-4 ${msg.senderId._id.toString() === userId ? 'text-right' : 'text-left'}`}>
-                        <div className={`inline-block px-4 py-2 rounded-lg ${msg.senderId._id.toString() === userId ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                    className={`mb-4 ${msg.senderId._id=== userId ? 'text-right' : 'text-left'}`}>
+                        <div className={`inline-block px-4 py-2 rounded-lg ${msg.senderId._id === userId ? 'bg-blue-100' : 'bg-gray-100'}`}>
                             <p className="text-sm">{msg?.message || "Brak treści"}</p>
                             <span className="text-xs text-gray-500">{msg?.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}</span>
                         </div>

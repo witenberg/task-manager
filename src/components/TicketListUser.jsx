@@ -17,6 +17,7 @@ const TicketUserList = ({ userId }) => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
+            //console.log("USER ID", userId);
             setTickets(data);
         } catch (error) {
             console.error('Error fetching tickets:', error);
@@ -91,6 +92,7 @@ const TicketUserList = ({ userId }) => {
                 {filteredTickets.map((ticket) => (
                     <li key={ticket._id} className="bg-white border p-6 mb-4 rounded-lg shadow-md">
                         {/* Informacje podstawowe */}
+                        {ticket._id && <p className="text-sm text-gray-500">Ticket ID: {ticket._id}</p>}
                         <p className="text-gray-600 mb-2">Category: {ticket.category}</p>
                         <h3 className="text-xl font-semibold text-gray-700 mb-2">{ticket.title}</h3>
                         <p className="text-sm text-gray-500 mb-2"><span className="font-semibold">Opis:</span> {ticket.description}</p>
@@ -126,7 +128,12 @@ const TicketUserList = ({ userId }) => {
                         )}
 
                         {openChatTicketId === ticket._id && (
-                            <ChatBox ticketId={ticket._id} />
+                            <ChatBox 
+                            ticket={ticket}
+                            userId={userId} 
+                            userRole={'user'}
+                            onClose={() => toggleChatBox(ticket._id)}
+                            />
                         )}
                     </li>
                 ))}
