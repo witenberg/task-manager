@@ -4,6 +4,8 @@ import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "./models/user";
 import bcrypt from "bcryptjs";
+import { findUserByEmail } from "./queries/users";
+import { dbConnect } from "./lib/mongo";
 
 export const {
   handlers: { GET, POST },
@@ -24,9 +26,9 @@ export const {
       async authorize(credentials) {
         if (credentials === null) return null;
 
-        const user = await User.findOne({
-          email: credentials?.email,
-        });
+        await dbConnect();
+
+        const user = await findUserByEmail(credentials?.email);
 
         if (user) {
           if (user.provider !== 'credentials') {

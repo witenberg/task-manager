@@ -1,5 +1,5 @@
 import SocialLoginButton from "./SocialLoginButton";
-import { doSocialLogin } from "../app/actions/index";
+import { doSocialLogin } from "../actions/Login";
 
 const SocialLogin = () => {
   return (

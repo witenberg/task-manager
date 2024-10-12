@@ -15,6 +15,7 @@ export async function createUser(userData) {
 
 export const findUserByEmail = async (email) => {
     try {
+        console.log(email);
         const user = await User.findOne({ email });
         return user;
     } catch (err) {
