@@ -1,26 +1,32 @@
 import { auth } from '../../../auth';
-import TicketForm from '../../../components/TicketForm';
 import { redirect } from "next/navigation";
 import Sidebar from '../../../components/Sidebar';
 import TicketListUser from '../../../components/TicketListUser';
 
 const UserTicketPage = async () => {
-  const session = await auth();
+  const session = await auth()
 
   if (!session?.user) {
-    redirect('/');
+    redirect('/')
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
       <Sidebar user={session.user} currentPage="tickets" />
 
-      <main className="flex-1 p-6 ml-64">
-        <h1 className="text-2xl font-bold mb-4">Your tickets</h1>
-        <TicketListUser userId={session.user.id} />
+      <main className="flex-1 p-8 ml-64">
+        <div className="max-w-4xl mx-auto">
+          {/* <Header 
+            title="Your Tickets" 
+            description="Manage and track your support requests." 
+          /> */}
+          <div className="mt-8">
+            <TicketListUser userId={session.user.id} />
+          </div>
+        </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default UserTicketPage;
+export default UserTicketPage
