@@ -338,7 +338,7 @@ const TicketListAdmin = ({ role, adminId }) => {
                                     <ChatBox
                                         ticket={activeChatTicket}
                                         userId={adminId}
-                                        userRole='admin'
+                                        userRole={role}
                                         onClose={closeChat}
                                     />
                                 )}

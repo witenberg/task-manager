@@ -79,8 +79,10 @@ export const {
 
   callbacks: {
     async signIn({ user, account, profile }) {
+      await dbConnect();
 
-      const existingUser = await User.findOne({ email: user?.email });
+      //const existingUser = await User.findOne({ email: user?.email });
+      const existingUser = await findUserByEmail(user?.email);
 
       if (existingUser && existingUser.provider !== account.provider) {
         throw new Error(`This email is already registered with ${existingUser.provider}. Please use ${existingUser.provider} to log in.`);
@@ -98,11 +100,13 @@ export const {
     },
 
     async jwt({ token, user }) {
+      await dbConnect();
       if (user) {
         token.id = user.id;
         token.role = user.role;
       } else {
-        const dbUser = await User.findOne({ email: token.email });
+        //const dbUser = await User.findOne({ email: token.email });
+        const dbUser = await findUserByEmail(token.email);
         token.id = dbUser?._id;
         token.role = dbUser?.role;
       }
@@ -110,6 +114,7 @@ export const {
     },
 
     async session({ session, token, user }) {
+      await dbConnect();
       session.user.id = token.id;
       session.user.role = token.role;
       return session;

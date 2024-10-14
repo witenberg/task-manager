@@ -67,7 +67,7 @@ const TicketForm = ({ userId, refreshTickets }) => {
     const taskId = e.target.value;
     const task = tasks.find(task => task._id === taskId);
     setSelectedTask(taskId);
-    setSelectedTaskTitle(task ? task.title : '');
+    //setSelectedTaskTitle(task ? task.title : '');
   }
 
   return (
